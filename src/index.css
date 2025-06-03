@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: scale(1.4) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.4) rotate(360deg);
+  }
+}
+
+@keyframes rotate2 {
+  0% {
+    transform: scale(1.4) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.4) rotate(360deg);
+  }
+}
+
+@keyframes rotate3 {
+  0% {
+    transform: scale(1.4) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.4) rotate(360deg);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .page-container {
+    @apply px-4;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+}
