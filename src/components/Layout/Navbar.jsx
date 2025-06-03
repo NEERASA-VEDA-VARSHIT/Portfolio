@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from "../../assets/logo.jpg";
 
 const Navbar = ({ isMenuOpen, toggleMenu }) => {
   return (
     <nav className="fixed top-0 left-120 right-0 z-50 px-8 py-4">
       <div className="flex items-center space-x-3 left-18 top-2 z-50 absolute">
-        <img src={logo} alt="Emma" className="w-15 h-15 rounded-full object-cover" />
+        {/* Removed logo import since file is missing */}
       </div>
 
       <div className="flex items-center justify-between left-18">
@@ -52,7 +51,7 @@ const MobileMenuButton = ({ isMenuOpen, toggleMenu }) => (
   <button className="md:hidden p-2" onClick={toggleMenu}>
     <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       {isMenuOpen ? (
-        <path strokeLinecap="round\" strokeLinejoin="round\" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
       ) : (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
       )}
