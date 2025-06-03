@@ -50,11 +50,27 @@
   .page-container {
     @apply px-4;
   }
+
+  .social-sidebar {
+    @apply hidden;
+  }
+
+  .rotating-rings {
+    @apply scale-75;
+  }
 }
 
 @media (max-width: 640px) {
   html {
     font-size: 14px;
+  }
+
+  .name-display {
+    @apply text-3xl;
+  }
+
+  .curved-border {
+    @apply w-[150px] h-[360px];
   }
 }
 

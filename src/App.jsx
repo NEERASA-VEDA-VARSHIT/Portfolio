@@ -6,7 +6,6 @@ import NoiseCanvas from "./components/Home/NoiseCanvas";
 import TypewriterEffect from "./components/Home/TypewriterEffect";
 import RotatingRings from "./components/Home/RotatingRings";
 
-// Import pages
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Education from "./pages/Education";
