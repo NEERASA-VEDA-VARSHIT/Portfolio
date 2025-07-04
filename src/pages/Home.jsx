@@ -1,165 +1,178 @@
-import { Link } from "react-router-dom";
-import logo from "../assets/logo.jpg";
+import { useRef, useEffect, useCallback, useState } from "react";
+import logo from "../assets/image.png";
 import pic from "../assets/pic.png";
 import FloatingShapes from "../components/FloatingShapes";
+import { Link } from "react-router-dom";
+import useIsMobile from "../hooks/useIsMobile";
+import MobileHome from "./MobileHome";
 
-const Home = ({
-  canvasRef,
-  isHovered,
-  setIsHovered,
-  isHovered2,
-  setIsHovered2,
-  isHovered3,
-  setIsHovered3,
-  isMenuOpen,
-  toggleMenu,
-  text,
-  showAuthor,
-}) => (
-  <div className="relative w-full h-screen overflow-hidden bg-[#fff8f0]">
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full mix-blend-multiply opacity-50 pointer-events-none"
-    />
+export default function Home() {
+  const canvasRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered2, setIsHovered2] = useState(false);
+  const [isHovered3, setIsHovered3] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    {/* Logo Section */}
-    <div className="flex items-center space-x-3 left-18 top-2 z-50 absolute">
-      <img
-        src={logo}
-        alt="Emma"
-        className="w-15 h-15 rounded-full object-cover"
+  // Typewriter effect state
+  const [text, setText] = useState("");
+  const [showAuthor, setShowAuthor] = useState(false); // State to control author visibility
+  const indexRef = useRef(0);
+
+  const fullText = `" To live fully is to embrace 
+  the present without 
+  changing the past or future.”`;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (indexRef.current < fullText.length - 1) {
+        setText((prev) => prev + fullText[indexRef.current]);
+        indexRef.current++;
+      } else {
+        clearInterval(interval);
+        setShowAuthor(true); // Show author after typing is complete
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [fullText]);
+
+  const generateTexture = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const width = canvas.width;
+    const height = canvas.height;
+
+    ctx.clearRect(0, 0, width, height);
+    const imageData = ctx.createImageData(width, height);
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const noise = Math.random() * 60 + 165;
+      const alpha = Math.random() * 0.3 + 0.15;
+      data[i] = noise + 15;
+      data[i + 1] = noise + 10;
+      data[i + 2] = noise - 5;
+      data[i + 3] = alpha * 220;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+  }, []);
+
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.requestAnimationFrame(generateTexture);
+  }, [generateTexture]);
+
+  useEffect(() => {
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    return () => window.removeEventListener("resize", resizeCanvas);
+  }, [resizeCanvas]);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const isMobile = useIsMobile();
+
+  const typewriterRef = useRef();
+  const authorRef = useRef();
+  const curveRef = useRef();
+  const [typewriterRight, setTypewriterRight] = useState("4vw");
+  const [authorRight, setAuthorRight] = useState("5vw");
+
+  useEffect(() => {
+    function checkOverlap() {
+      if (!typewriterRef.current || !curveRef.current) return;
+      const typeRect = typewriterRef.current.getBoundingClientRect();
+      const curveRect = curveRef.current.getBoundingClientRect();
+      // If the left edge of the typewriter text is less than the right edge of the curve, they overlap
+      if (typeRect.left < curveRect.right) {
+        setTypewriterRight("12vw");
+        setAuthorRight("13vw");
+      } else {
+        setTypewriterRight("4vw");
+        setAuthorRight("5vw");
+      }
+    }
+    window.addEventListener("resize", checkOverlap);
+    checkOverlap();
+    return () => window.removeEventListener("resize", checkOverlap);
+  }, []);
+
+  if (isMobile) {
+    return <MobileHome />;
+  }
+
+  return (
+    <div className="relative w-full h-screen overflow-hidden bg-[#fff8f0]">
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full mix-blend-multiply opacity-50 pointer-events-none"
       />
-    </div>
 
-    {/* Navbar */}
-    <nav className="fixed top-0 left-120 right-0 z-50 px-8 py-4">
-      <div className="flex items-center justify-between left-18">
-        {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
-          <a
-            href="#about"
-            className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
-          >
-            About me
-          </a>
-          <Link
-            to="/education"
-            className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
-          >
-            Education
-          </Link>
-          <a
-            href="#portfolio"
-            className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
-          >
-            Portfolio
-          </a>
-          <a
-            href="#experience"
-            className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
-          >
-            Experience
-          </a>
-          <a
-            href="#contacts"
-            className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
-          >
-            Contacts
-          </a>
-        </div>
-
-        {/* Download CV Button */}
-        <div className="hidden md:block">
-          <button
-            className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center space-x-2"
-            style={{
-              background: `
-                linear-gradient(135deg, #00c896 5%, #00754b 70%, #474747 110%)
-              `,
-              filter: "blur(0.5px)",
-              opacity: 0.9,
-              boxShadow: "0 4px 20px rgba(71, 71, 71, 0.3)",
-            }}
-          >
-            <span>Download CV</span>
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </button>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button className="md:hidden p-2" onClick={toggleMenu}>
-          <svg
-            className="w-6 h-6 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            {isMenuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            )}
-          </svg>
-        </button>
+      <div className="flex items-center space-x-3 left-18 top-2 z-50 absolute">
+        <img
+          src={logo}
+          alt="Emma"
+          className="w-15 h-15 rounded-full object-cover"
+        />
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden mt-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4">
-          <div className="flex flex-col space-y-3">
+      {/* Navbar */}
+      <nav className="fixed top-0 left-120 right-0 z-50 px-8 py-4">
+        <div className="flex items-center justify-between left-18">
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center space-x-8">
             <a
               href="#about"
-              className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
             >
               About me
             </a>
             <Link
               to="/education"
-              className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
             >
               Education
             </Link>
             <a
               href="#portfolio"
-              className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
             >
               Portfolio
             </a>
             <a
               href="#experience"
-              className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
             >
               Experience
             </a>
             <a
               href="#contacts"
-              className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
             >
               Contacts
             </a>
-            <button className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center justify-center space-x-2 mt-4">
+          </div>
+
+          {/* Download CV Button */}
+          <div className="hidden md:block">
+            <button
+              className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center space-x-2"
+              style={{
+                background: `
+        linear-gradient(135deg, #00c896 5%, #00754b 70%, #474747 110%)
+      `,
+                filter: "blur(0.5px)",
+                opacity: 0.9,
+                boxShadow: "0 4px 20px rgba(71, 71, 71, 0.3)",
+              }}
+            >
               <span>Download CV</span>
               <svg
                 className="w-4 h-4"
@@ -176,9 +189,88 @@ const Home = ({
               </svg>
             </button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button className="md:hidden p-2" onClick={toggleMenu}>
+            <svg
+              className="w-6 h-6 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
         </div>
-      )}
-    </nav>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4">
+            <div className="flex flex-col space-y-3">
+              <a
+                href="#about"
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              >
+                About me
+              </a>
+              <a
+                href="#education"
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              >
+                Education
+              </a>
+              <a
+                href="#portfolio"
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              >
+                Portfolio
+              </a>
+              <a
+                href="#experience"
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              >
+                Experience
+              </a>
+              <a
+                href="#contacts"
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+              >
+                Contacts
+              </a>
+              <button className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center justify-center space-x-2 mt-4">
+                <span>Download CV</span>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
 
       {/* Curved Top Left Section with Logo */}
       <div
@@ -191,7 +283,7 @@ const Home = ({
 
       {/* Dark Skin Color Layer Below Curve */}
       <div
-        className="absolute top-[120px] left-[-1px] w-60 h-60 pointer-events-none"
+        className="absolute top-[120px] left-[-40px] w-60 h-60 pointer-events-none"
         style={{
           background: `
             radial-gradient(circle at center, rgba(139, 111, 90, 0.25) 0%, rgba(139, 111, 90, 0.15) 40%, transparent 70%),
@@ -206,7 +298,7 @@ const Home = ({
       />
 
       {/* Vertical Social Media Sidebar */}
-      <div className="fixed left-23 top-4/6 transform -translate-y-1/2 z-20 opacity-60">
+      <div className="fixed left-1/19 top-4/6 transform -translate-y-1/2 z-20 opacity-60">
         <div className="flex flex-col items-center space-y-6">
           {/* Vertical Line */}
           <div className="w-px h-22 bg-gradient-to-b from-transparent to-gray-400 opacity-40"></div>
@@ -272,7 +364,6 @@ const Home = ({
         </div>
       </div>
 
-      {/* Rest of your existing elements... */}
       {/* Cyan diffusion with layered blur effect in top right corner */}
       <div
         className="absolute top-0 right-0 w-1/6 h-full pointer-events-none"
@@ -283,7 +374,7 @@ const Home = ({
                 radial-gradient(ellipse 180px 450px at top right, #6be8cb 0%, transparent 85%)
                 `,
           filter: "blur(1.5px)",
-          opacity: 0.69,
+          opacity: 0.9,
         }}
       ></div>
 
@@ -411,6 +502,10 @@ const Home = ({
         onMouseEnter={() => setIsHovered3(true)}
         onMouseLeave={() => setIsHovered3(false)}
       >
+        <div className="absolute top-2.5 left-2 w-full h-full">
+          <FloatingShapes />
+        </div>
+
         <div className="relative w-20 h-20">
           <div
             className="w-full h-full rounded-full border-2 opacity-10 border-solid border-gray-500"
@@ -439,7 +534,13 @@ const Home = ({
         />
 
         {/* Text Following Exact Rectangle Curve */}
-        <div className="absolute top-[-30px] left-[-65px] z-40">
+        <div
+          className="absolute top-[-30px] left-[-65px] z-40"
+          style={{
+            width: "clamp(250px, 40vw, 500px)",
+            height: "auto",
+          }}
+        >
           <svg
             width="500"
             height="450"
@@ -462,7 +563,7 @@ const Home = ({
             {/* NEERASA text on upper curve */}
             <text
               style={{
-                fontSize: "28px",
+                fontSize: "clamp(18px, 3vw, 32px)",
                 fontWeight: "bold",
                 fontFamily: "Georgia, serif",
                 fill: "#6B46C1",
@@ -475,7 +576,7 @@ const Home = ({
             {/* VEDA VRASHIT text on lower curve */}
             <text
               style={{
-                fontSize: "50px",
+                fontSize: "clamp(32px, 6vw, 50px)",
                 fontWeight: "bold",
                 fontFamily: "Georgia, serif",
                 fill: "#6B46C1",
@@ -503,9 +604,9 @@ const Home = ({
    C 140,120 300,140 350,180"
           fill="none"
           stroke="#fcd9c4"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           markerEnd="url(#arrowhead)"
         />
 
@@ -534,67 +635,35 @@ const Home = ({
         </text>
       </svg>
 
-     
-
-      {/* Gradient Circle */}
-      <div
-        className="absolute"
-        style={{
-          right: "430px", // adjust as needed
-          bottom: "50px", // adjust as needed
-          width: "180px",
-          height: "90px",
-          zIndex: 50,
-          perspective: "600px",
-        }}
+      {/* Typewriter Effect Text */}
+      <pre
+        ref={typewriterRef}
+        className="absolute text-right font-mono text-gray-500 opacity-70 max-w-[32vw] whitespace-pre-wrap
+          right-[2vw] sm:right-[4vw] md:right-[6vw]
+          bottom-[10vh] sm:bottom-[10vh] md:bottom-[12vh] z-50 custom-typewriter"
+        style={{ lineHeight: 1.5, right: typewriterRight }}
       >
-        <svg width="150" height="70" viewBox="0 0 180 90">
-          {/* Main semi-sphere */}
-          <ellipse
-            cx="90"
-            cy="90"
-            rx="90"
-            ry="90"
-            fill="#009063"
-            style={{
-              filter: "drop-shadow(0 8px 24px rgba(0,144,99,0.18))",
-            }}
-          />
-        </svg>
+        {text}
+      </pre>
 
+      {/* Author Text */}
+      {showAuthor && (
         <div
-        className="absolute top-3/4 left-3/7 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full opacity-100"
-        style={{
-          background: "radial-gradient(circle, #ff7eb3, #ff758c, #ff6a6a)",
-          boxShadow: "0 20px 50px rgba(255, 105, 135, 0.5)",
-          animation: "",
-        }}
-      ></div>
-      
-      <div href=''
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-lg font-bold"
-        style={{
-          textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-        }}
-      >
-        
-        {/* Your text here */}
-      </div>
+          ref={authorRef}
+          className="absolute text-right font-mono text-gray-500 opacity-60 mt-2
+            right-[3vw] sm:right-[5vw] md:right-[7vw]
+            bottom-[8vh] sm:bottom-[6vh] md:bottom-[8vh] z-50 custom-typewriter"
+          style={{ right: authorRight }}
+        >
+          — Eckhart Tolle
+        </div>
+      )}
 
-      </div>
-
-      <FloatingShapes />
-
-      <pre className="absolute bottom-25 right-45 text-lg font-mono text-gray-500 opacity-60" style={{ whiteSpace: "pre-wrap" }}>
-      {text}
-    </pre>
-
-    {showAuthor && (
-      <div className="absolute bottom-15 right-25 text-right text-lg font-mono text-gray-500 opacity-60">
-        — Eckhart Tolle
-      </div>
-    )}
-  </div>
-);
-
-export default Home;
+      <style>{`
+        .custom-typewriter {
+          font-size: clamp(15px, 1.5vw, 21px) !important;
+        }
+      `}</style>
+    </div>
+  );
+}
