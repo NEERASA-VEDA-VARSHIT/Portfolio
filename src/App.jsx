@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback, useState } from "react";
-import logo from "./assets/logo.jpg"; // Update the path to your logo file
+import logo from "./assets/image.png"; // Update the path to your image file
 import pic from "./assets/pic.png"; // Update the path to your image file
 import FloatingShapes from "./components/FloatingShapes"; // Import the FloatingShapes component
 import { Routes, Route, Link } from "react-router-dom";
@@ -528,7 +528,7 @@ function App() {
       </div>
 
       <div
-        className="absolute bottom-[20px] left-8/17 transform -translate-x-1/2 w-2/7 h-100"
+        className="absolute bottom-[20px] left-8/17 transform -translate-x-1/2 w-130 h-100"
         style={{
           background: `rgb(255, 206, 109)`,
           borderTopLeftRadius: "280px",
