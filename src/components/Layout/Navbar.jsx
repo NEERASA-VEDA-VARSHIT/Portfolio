@@ -33,25 +33,36 @@ const NavLink = ({ to, children }) => (
   <Link
     to={to}
     className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
+    title={`Navigate to ${children}`}
   >
     {children}
   </Link>
 );
 
 const DownloadButton = () => (
-  <button className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center space-x-2">
+  <button 
+    className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center space-x-2"
+    title="Download CV"
+    aria-label="Download CV"
+  >
     <span>Download CV</span>
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
   </button>
 );
 
 const MobileMenuButton = ({ isMenuOpen, toggleMenu }) => (
-  <button className="md:hidden p-2" onClick={toggleMenu}>
-    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <button 
+    className="md:hidden p-2" 
+    onClick={toggleMenu}
+    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+    title={isMenuOpen ? "Close menu" : "Open menu"}
+    aria-expanded={isMenuOpen}
+  >
+    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       {isMenuOpen ? (
-        <path strokeLinecap="round\" strokeLinejoin="round\" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
       ) : (
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
       )}
@@ -61,7 +72,7 @@ const MobileMenuButton = ({ isMenuOpen, toggleMenu }) => (
 
 const MobileMenu = ({ isMenuOpen }) => (
   isMenuOpen && (
-    <div className="md:hidden mt-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4">
+    <div className="md:hidden mt-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4" role="menu">
       <div className="flex flex-col space-y-3">
         <MobileNavLink to="/about">About me</MobileNavLink>
         <MobileNavLink to="/education">Education</MobileNavLink>
@@ -78,6 +89,8 @@ const MobileNavLink = ({ to, children }) => (
   <Link
     to={to}
     className="text-gray-600 hover:text-gray-800 transition-colors duration-300 text-sm font-medium py-2"
+    title={`Navigate to ${children}`}
+    role="menuitem"
   >
     {children}
   </Link>

@@ -20,7 +20,7 @@ export default function Home() {
 
   const fullText = `" To live fully is to embrace 
   the present without 
-  changing the past or future.”`;
+  changing the past or future."`;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -124,10 +124,10 @@ export default function Home() {
       </div>
 
       {/* Navbar */}
-      <nav className="fixed top-0 left-120 right-0 z-50 px-8 py-4">
-        <div className="flex items-center justify-between left-18">
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-4">
+        <div className="flex items-center justify-between">
+          {/* Desktop Navigation Links - Centered */}
+          <div className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
             <a
               href="#about"
               className="text-gray-400 hover:text-gray-700 transition-colors duration-300 text-sm font-medium"
@@ -160,8 +160,8 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Download CV Button */}
-          <div className="hidden md:block">
+          {/* Download CV Button - Right aligned */}
+          <div className="hidden md:block ml-auto">
             <button
               className="bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors duration-300 flex items-center space-x-2"
               style={{
@@ -408,7 +408,7 @@ export default function Home() {
       >
         <div className="relative w-20 h-20">
           <div
-            className="w-full h-full rounded-full border-8 opacity-40 border-solid border-blue-300"
+            className="w-full h-full rounded-full border-12px opacity-60 border-solid border-blue-300"
             style={{
               transform: isHovered ? "scale(1.05)" : "scale(1)",
               transition: "transform 0.3s ease",
@@ -456,7 +456,7 @@ export default function Home() {
       >
         <div className="relative w-15 h-15">
           <div
-            className="w-full h-full rounded-full border-7 border-solid border-teal-500 opacity-10"
+            className="w-full h-full rounded-full border-4 border-solid border-teal-500 opacity-40"
             style={{
               transform: isHovered2 ? "scale(1.05)" : "scale(1)",
               transition: "transform 0.3s ease",

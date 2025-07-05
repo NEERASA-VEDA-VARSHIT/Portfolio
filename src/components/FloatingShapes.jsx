@@ -10,25 +10,6 @@ function FloatingShapes() {
           animation: "floatOrb 15s ease-in-out infinite",
         }}
       ></div>
-
-      
-
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes floatOrb {
-          0% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-5px);
-          }
-          100% {
-            transform: translateY(0);
-          }
-        }
-
-    
-      `}</style>
     </div>
   );
 }

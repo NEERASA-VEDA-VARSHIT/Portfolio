@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import EducationPage from "./pages/EducationPage";
 import Home from "./pages/Home";
 
+
 function App() {
   return (
     <Routes>
